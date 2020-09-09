@@ -1,24 +1,25 @@
 import sys
 import threading
 import socket
+import time
 
 
 class TUCommunicator(threading.Thread):
     def __init__(self):
         super().__init__()
-        self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.sock.bind(("127.0.0.1", 58678))
+        self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM) # TCP 사용
+        self.sock.bind(("127.0.0.1", 58678)) # 포트 오픈
 
     def run(self):
-        self.sock.listen()
+        self.sock.listen() # 포트 연결 대기
 
-        (client, addr) = self.sock.accept()
+        (client, addr) = self.sock.accept() #연결 성립
         print(addr, " has connected.")
 
         while True:
             response = ""
 
-            rdat = client.recv(1024).decode()
+            rdat = client.recv(1024).decode() # 클라이언트로부터 값을 읽어오기
 
             print("Received: ", rdat)
 
@@ -33,20 +34,22 @@ class TUCommunicator(threading.Thread):
             else:
                 exit(2)
 
-            client.send(response.encode())
+            client.send(response.encode()) # 값 전송
+
+            time.sleep(1)
 
 
 # Global variables
 min_timeout = 0
-max_timeout = 0
+hr_timeout = 0
 
 
 def setTimeout(vals):
     try:
-        global min_timeout, max_timeout
+        global min_timeout, hr_timeout
         min_timeout = vals[0]
-        max_timeout = vals[1]
-        print("New timeout: ", min_timeout, "/", max_timeout)
+        hr_timeout = vals[1]
+        print("New timeout: ", min_timeout, "/", hr_timeout)
         return 0
     except IndexError:
         print("Error: invalid timeout value")
@@ -58,7 +61,7 @@ if len(sys.argv) != 3:
     exit(1)
 else:
     min_timeout = sys.argv[1]
-    max_timeout = sys.argv[2]
+    hr_timeout = sys.argv[2]
 
 tuCommunicator = TUCommunicator()
 tuCommunicator.start()
