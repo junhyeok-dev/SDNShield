@@ -1,3 +1,36 @@
+import threading
+import time
+
+
+class DetectorThread(threading.Thread):
+    def __init__(self, thsrc, thtime):
+        super().__init__()
+        self.thsrc = thsrc
+        self.thtime = thtime
+
+    def run(self):
+        while True:
+            packetdata = [
+                {"timestamp": "2020-9-8 15:45", "protocol": "tcp", "src": "10.0.0.1", "dst": "10.0.0.2"},
+                {"timestamp": "2020-9-8 15:45", "protocol": "tcp", "src": "10.0.0.2", "dst": "10.0.0.1"},
+                {"timestamp": "2020-9-8 15:45", "protocol": "tcp", "src": "10.0.0.3", "dst": "10.0.0.1"},
+                {"timestamp": "2020-9-8 15:45", "protocol": "tcp", "src": "10.0.0.6", "dst": "10.0.0.1"},
+                {"timestamp": "2020-9-8 15:45", "protocol": "tcp", "src": "10.0.0.2", "dst": "10.0.0.1"},
+                {"timestamp": "2020-9-8 15:45", "protocol": "tcp", "src": "10.0.0.1", "dst": "10.0.0.2"},
+                {"timestamp": "2020-9-8 15:46", "protocol": "tcp", "src": "10.0.0.2", "dst": "10.0.0.1"},
+                {"timestamp": "2020-9-8 15:46", "protocol": "tcp", "src": "10.0.0.1", "dst": "10.0.0.2"},
+                {"timestamp": "2020-9-8 15:57", "protocol": "tcp", "src": "10.0.0.2", "dst": "10.0.0.1"},
+                {"timestamp": "2020-9-8 15:57", "protocol": "tcp", "src": "10.0.0.1", "dst": "10.0.0.2"},
+                {"timestamp": "2020-9-8 15:57", "protocol": "tcp", "src": "10.0.0.2", "dst": "10.0.0.1"},
+                {"timestamp": "2020-9-8 15:58", "protocol": "tcp", "src": "10.0.0.2", "dst": "10.0.0.1"},
+                {"timestamp": "2020-9-8 15:58", "protocol": "tcp", "src": "10.0.0.1", "dst": "10.0.0.2"},
+                {"timestamp": "2020-9-8 15:58", "protocol": "tcp", "src": "10.0.0.2", "dst": "10.0.0.1"}
+            ]
+
+            print(detectIpEntropyOutlier(packetdata, 2, 1))
+
+            time.sleep(self.thtime)
+
 def detectIpEntropyOutlier(packets, thsrc, thtime): #패킷데이터, 임계치, 단위시간 입력
     dstIps = [] #목적지 주소를 저장하는 배열
     dstSrcMap = {} #목적지 - 목적지로 패킷을 보낸 출발지를 저장하는 딕셔너리
@@ -18,22 +51,5 @@ def detectIpEntropyOutlier(packets, thsrc, thtime): #패킷데이터, 임계치,
     return result
 
 
-# 샘플 데이터
-packetdata = [
-    {"timestamp": "2020-9-8 15:45", "protocol": "tcp", "src": "10.0.0.1", "dst": "10.0.0.2"},
-    {"timestamp": "2020-9-8 15:45", "protocol": "tcp", "src": "10.0.0.2", "dst": "10.0.0.1"},
-    {"timestamp": "2020-9-8 15:45", "protocol": "tcp", "src": "10.0.0.3", "dst": "10.0.0.1"},
-    {"timestamp": "2020-9-8 15:45", "protocol": "tcp", "src": "10.0.0.6", "dst": "10.0.0.1"},
-    {"timestamp": "2020-9-8 15:45", "protocol": "tcp", "src": "10.0.0.2", "dst": "10.0.0.1"},
-    {"timestamp": "2020-9-8 15:45", "protocol": "tcp", "src": "10.0.0.1", "dst": "10.0.0.2"},
-    {"timestamp": "2020-9-8 15:46", "protocol": "tcp", "src": "10.0.0.2", "dst": "10.0.0.1"},
-    {"timestamp": "2020-9-8 15:46", "protocol": "tcp", "src": "10.0.0.1", "dst": "10.0.0.2"},
-    {"timestamp": "2020-9-8 15:57", "protocol": "tcp", "src": "10.0.0.2", "dst": "10.0.0.1"},
-    {"timestamp": "2020-9-8 15:57", "protocol": "tcp", "src": "10.0.0.1", "dst": "10.0.0.2"},
-    {"timestamp": "2020-9-8 15:57", "protocol": "tcp", "src": "10.0.0.2", "dst": "10.0.0.1"},
-    {"timestamp": "2020-9-8 15:58", "protocol": "tcp", "src": "10.0.0.2", "dst": "10.0.0.1"},
-    {"timestamp": "2020-9-8 15:58", "protocol": "tcp", "src": "10.0.0.1", "dst": "10.0.0.2"},
-    {"timestamp": "2020-9-8 15:58", "protocol": "tcp", "src": "10.0.0.2", "dst": "10.0.0.1"}
-]
-
-print(detectIpEntropyOutlier(packetdata, 10000, 1))
+dtThread = DetectorThread(2, 3)
+dtThread.start()

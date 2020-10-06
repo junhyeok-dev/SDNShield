@@ -60,8 +60,39 @@ if len(sys.argv) != 3:
     print("Usage: ThreatLevelManager [MIN_TIMEOUT] [HOUR_TIMEOUT]")
     exit(1)
 else:
-    min_timeout = sys.argv[1]
-    hr_timeout = sys.argv[2]
+    min_timeout = int(sys.argv[1])
+    hr_timeout = int(sys.argv[2])
 
 tuCommunicator = TUCommunicator()
 tuCommunicator.start()
+
+NO_THREAT = 0
+LOW_THREAT = 1
+AFTER_LOW_THREAT = 2
+HIGH_THREAT = 3
+
+state = NO_THREAT
+
+signal = False
+timer_start = 0
+
+while True:
+    if signal:
+        if state == NO_THREAT:
+            state = LOW_THREAT
+        elif state == LOW_THREAT:
+            state = HIGH_THREAT
+        else:
+            state = HIGH_THREAT
+        timer_start = time.time()
+
+    if time.time() - timer_start > min_timeout * 60:
+        if state == LOW_THREAT:
+            state = AFTER_LOW_THREAT
+        elif state == HIGH_THREAT:
+            state = LOW_THREAT
+
+    if time.time() - timer_start > hr_timeout * 60:
+        state = NO_THREAT
+
+
