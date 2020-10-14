@@ -62,7 +62,7 @@ capture = subprocess.Popen([
 
 while True:
     line = capture.stdout.readline().decode().split("\t")
-    print("Line: ", line)
+    #print("Line: ", line)
 
     if len(line) > 3:
         packetdata.append({
