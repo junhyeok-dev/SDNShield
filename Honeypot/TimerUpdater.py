@@ -74,22 +74,20 @@ while True:
             "flags": line[4]
         })
         
-    if linenum % 2000 == 0:
+    if linenum % 50000 == 0:
         timestamps = [packet["timestamp"] for packet in packetdata]
-        timediffs = [(timestamps[i + 1] - timestamps[i]) / 60 for i in range(len(timestamps) - 1)]
+        timediffs = [(timestamps[i + 1] - timestamps[i]) for i in range(len(timestamps) - 1)]
 
-        if len(timediffs) == 0: continue
-        avg_diff = sum(timediffs) / len(timediffs)
+        max_diff = max(timediffs)
+        min_diff = min(timediffs)
+        range_diff = max_diff - min_diff
+        print(linenum, ',', max_diff)
 
-        candidates = [timediff if timediff > avg_diff else 0 for timediff in timediffs]
-        num_candidate = 0
-        for candidate in candidates:
-            if candidate != 0:
-                num_candidate += 1
-        candidates = sum(candidates)
+        th = max_diff - (range_diff / 10)
 
-        if num_candidate == 0: continue
-        new_timeout = int(candidates / num_candidate + c)
+        candidates = [timediff if timediff > th else 0 for timediff in timediffs]
+
+        new_timeout = int(max(candidates)) + c
         print("New timeout: ", new_timeout)
 
         tlmCommunicator.updateTimer(new_timeout, 60)
