@@ -10,7 +10,7 @@ class TUCommunicator(threading.Thread):
     def __init__(self):
         super().__init__()
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM) # TCP 사용
-        self.sock.bind(("127.0.0.1", 58678)) # 포트 오픈
+        self.sock.bind(("172.17.0.1", 58678)) # 포트 오픈
 
     def run(self):
         self.sock.listen() # 포트 연결 대기

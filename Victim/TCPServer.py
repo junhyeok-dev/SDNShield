@@ -12,4 +12,5 @@ else:
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM) # TCP 사용
 sock.bind(("127.0.0.1", port))
 
-sock.listen()
+while True:
+    sock.listen()
