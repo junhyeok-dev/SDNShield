@@ -10,7 +10,7 @@ class TUCommunicator(threading.Thread):
     def __init__(self):
         super().__init__()
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM) # TCP 사용
-        self.sock.bind(("127.0.0.1", 58678)) # 포트 오픈
+        self.sock.bind(("172.17.0.2", 58678)) # 포트 오픈
 
     def run(self):
         self.sock.listen() # 포트 연결 대기
@@ -49,8 +49,8 @@ hr_timeout = 0
 def setTimeout(vals):
     try:
         global min_timeout, hr_timeout
-        min_timeout = vals[0]
-        hr_timeout = vals[1]
+        min_timeout = int(vals[0])
+        hr_timeout = int(vals[1])
         print("New timeout: ", min_timeout, "/", hr_timeout)
         return 0
     except IndexError:
